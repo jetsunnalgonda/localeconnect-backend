@@ -5,17 +5,18 @@ import bcrypt from 'bcryptjs';
 
 // const prisma = new PrismaClient();
 
-import { PrismaClient } from '@prisma/client'
-import { PrismaLibSQL } from '@prisma/adapter-libsql'
-import { createClient } from '@libsql/client'
+// import { PrismaClient } from '@prisma/client'
+// import { PrismaLibSQL } from '@prisma/adapter-libsql'
+// import { createClient } from '@libsql/client'
 
-const libsql = () => createClient({
-  url: `${process.env.TURSO_DATABASE_URL}`,
-  authToken: `${process.env.TURSO_AUTH_TOKEN}`,
-});
+import prisma from './prisma.js';
+// const libsql = () => createClient({
+//   url: `${process.env.TURSO_DATABASE_URL}`,
+//   authToken: `${process.env.TURSO_AUTH_TOKEN}`,
+// });
 
-const adapter = new PrismaLibSQL(libsql)
-const prisma = new PrismaClient({ adapter })
+// const adapter = new PrismaLibSQL(libsql)
+// const prisma = new PrismaClient({ adapter })
 
 // Function to generate a JWT token
 export const generateToken = (user) => {
@@ -35,6 +36,9 @@ export const authenticateUser = async (email, password) => {
   const user = await prisma.user.findUnique({
     where: { email },
   });
+
+  console.log('authenticating user');
+  console.log('user', user);
 
   if (!user || !(await bcrypt.compare(password, user.password))) {
     throw new Error('Invalid credentials');

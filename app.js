@@ -13,10 +13,10 @@ import { authenticateJWT, authenticateUser, generateToken } from './auth.js';
 import https from 'https';
 import { WebSocketServer } from 'ws';
 
-
-import { PrismaClient } from '@prisma/client'
-import { PrismaLibSQL } from '@prisma/adapter-libsql'
-import { createClient } from '@libsql/client'
+import prisma from './prisma.js';
+// import { PrismaClient } from '@prisma/client'
+// import { PrismaLibSQL } from '@prisma/adapter-libsql'
+// import { createClient } from '@libsql/client'
 
 // import bodyParser from 'body-parser';
 
@@ -54,13 +54,13 @@ const wss = new WebSocketServer({ server });
 dotenv.config();
 
 
-const libsql = createClient({
-  url: `${process.env.TURSO_DATABASE_URL}`,
-  authToken: `${process.env.TURSO_AUTH_TOKEN}`,
-})
+// const libsql = createClient({
+//   url: `${process.env.TURSO_DATABASE_URL}`,
+//   authToken: `${process.env.TURSO_AUTH_TOKEN}`,
+// })
 
-const adapter = new PrismaLibSQL(libsql)
-const prisma = new PrismaClient({ adapter })
+// const adapter = new PrismaLibSQL(libsql)
+// const prisma = new PrismaClient({ adapter })
 
 
 // const prisma = new PrismaClient();
@@ -256,12 +256,15 @@ app.post('/register', upload.array('avatars', 5), async (req, res) => {
 // Login route
 app.post('/login', async (req, res) => {
     const { email, password } = req.body;
-
+    console.log(email, password);
     try {
         const user = await authenticateUser(email, password, prisma);
+        console.log("user");
+        console.log(user);
         const token = generateToken(user);
         res.send({ token });
     } catch (error) {
+        console.log(error.message)
         res.status(401).send({ message: error.message });
     }
 });
