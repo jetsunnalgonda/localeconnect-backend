@@ -49,7 +49,7 @@ dotenv.config();
 
 
 const prisma = new PrismaClient();
-const PORT = process.env.PORT;
+// const PORT = process.env.PORT;
 
 // Middleware to parse JSON bodies
 app.use(express.json());
@@ -746,6 +746,8 @@ app.put('/profile/avatar', authenticate, updateAvatar);
 // Delete avatar
 app.delete('/profile/avatar/:avatarId', authenticate, deleteAvatar);
 
+
+const PORT = process.env.PORT;
 // Start the server
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
