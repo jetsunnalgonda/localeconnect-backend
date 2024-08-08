@@ -54,18 +54,33 @@ export const verifyToken = (token) => {
 };
 
 // authenticate middleware
-export const authenticate = (req, res, next) => {
-    const token = req.headers.authorization?.split(' ')[1];
-    if (token) {
-      try {
-        const user = verifyToken(token);
-        req.user = user;
-        next();
-      } catch (error) {
-        return res.sendStatus(403);
-      }
-    } else {
-      res.sendStatus(401);
+// export const authenticate = (req, res, next) => {
+//   const token = req.headers.authorization?.split(' ')[1];
+//   if (token) {
+//     try {
+//       const user = verifyToken(token);
+//       req.user = user;
+//       next();
+//     } catch (error) {
+//       return res.sendStatus(403);
+//     }
+//   } else {
+//     res.sendStatus(401);
+//   }
+// };
+
+// Middleware to protect routes
+export const authenticateJWT = (req, res, next) => {
+  const token = req.headers.authorization?.split(' ')[1];
+  if (token) {
+    try {
+      const user = verifyToken(token);
+      req.user = user;
+      next();
+    } catch (error) {
+      return res.sendStatus(403);
     }
-  };
-  
+  } else {
+    res.sendStatus(401);
+  }
+};

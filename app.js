@@ -5,9 +5,9 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import multer from 'multer';
 import fs from 'fs';
-import { updateAvatar, deleteAvatar } from './controllers/profileController.js';
-import { authenticate, authenticateUser, generateToken, verifyToken } from './auth.js';
-import { getAvatars } from './functions/avatars.js';
+// import { updateAvatar, deleteAvatar } from './controllers/profileController.js';
+import { authenticateJWT, authenticateUser, generateToken } from './auth.js';
+// import { getAvatars } from './functions/avatars.js';
 
 // WebSocket
 import https from 'https';
@@ -123,21 +123,6 @@ wss.on('connection', (ws) => {
 // const upload = multer({ storage });
 // ****************************************************************
 
-// Middleware to protect routes
-const authenticateJWT = (req, res, next) => {
-    const token = req.headers.authorization?.split(' ')[1];
-    if (token) {
-        try {
-            const user = verifyToken(token);
-            req.user = user;
-            next();
-        } catch (error) {
-            return res.sendStatus(403);
-        }
-    } else {
-        res.sendStatus(401);
-    }
-};
 
 const KM_TO_DEGREES_LAT = 1 / 111; // Approximate conversion factor from km to degrees latitude
 
@@ -731,20 +716,20 @@ app.get('/feed2', authenticateJWT, async (req, res) => {
 
 
 // Define the route for fetching avatars
-app.get('/avatars', async (req, res) => {
-    try {
-        const avatars = await getAvatars(); // Replace with your function to get avatars
-        res.json(avatars);
-    } catch (error) {
-        res.status(500).json({ message: 'Error fetching avatars' });
-    }
-});
+// app.get('/avatars', async (req, res) => {
+//     try {
+//         const avatars = await getAvatars(); // Replace with your function to get avatars
+//         res.json(avatars);
+//     } catch (error) {
+//         res.status(500).json({ message: 'Error fetching avatars' });
+//     }
+// });
 
 // Update avatar
-app.put('/profile/avatar', authenticate, updateAvatar);
+// app.put('/profile/avatar', authenticate, updateAvatar);
 
 // Delete avatar
-app.delete('/profile/avatar/:avatarId', authenticate, deleteAvatar);
+// app.delete('/profile/avatar/:avatarId', authenticate, deleteAvatar);
 
 
 const PORT = process.env.PORT;
