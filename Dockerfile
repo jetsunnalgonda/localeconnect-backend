@@ -14,7 +14,7 @@ RUN npm install
 COPY . .
 
 # Copy the uploads directory
-COPY uploads /app/uploads
+# COPY uploads /app/uploads
 
 # Copy the certificate and key files
 # COPY private.key /app/private.key
