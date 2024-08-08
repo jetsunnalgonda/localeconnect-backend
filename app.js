@@ -14,15 +14,15 @@ import https from 'https';
 import { WebSocketServer } from 'ws';
 // import bodyParser from 'body-parser';
 
-import AWS from 'aws-sdk';
+// import AWS from 'aws-sdk';
 
-AWS.config.update({
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-    region: process.env.AWS_REGION,
-});
+// AWS.config.update({
+//     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+//     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+//     region: process.env.AWS_REGION,
+// });
 
-const s3 = new AWS.S3();
+// const s3 = new AWS.S3();
 
 // const options = {
 //     key: fs.readFileSync('private.key'),
@@ -104,23 +104,23 @@ wss.on('connection', (ws) => {
 });
 
 // Ensure the uploads directory exists
-// const uploadDir = './uploads';
+const uploadDir = './uploads';
 // **** Uploads will be handled by the cloud storage ****************
-// if (!fs.existsSync(uploadDir)) {
-//     fs.mkdirSync(uploadDir);
-// }
-// app.use('/uploads', express.static('uploads'));
+if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir);
+}
+app.use('/uploads', express.static('uploads'));
 // Set up multer for file uploads
-// const storage = multer.diskStorage({
-//     destination: (req, file, cb) => {
-//         cb(null, 'uploads');
-//     },
-//     filename: (req, file, cb) => {
-// const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1E9)}`;
-// cb(null, `${uniqueSuffix}-${file.originalname}`);
-//     },
-// });
-// const upload = multer({ storage });
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'uploads');
+    },
+    filename: (req, file, cb) => {
+const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1E9)}`;
+cb(null, `${uniqueSuffix}-${file.originalname}`);
+    },
+});
+const upload = multer({ storage });
 // ****************************************************************
 
 
