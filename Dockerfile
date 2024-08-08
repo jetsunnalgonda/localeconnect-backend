@@ -17,8 +17,8 @@ COPY . .
 COPY uploads /app/uploads
 
 # Copy the certificate and key files
-COPY private.key /app/private.key
-COPY certificate.crt /app/certificate.crt
+# COPY private.key /app/private.key
+# COPY certificate.crt /app/certificate.crt
 
 # Copy the wait-for-it.sh script
 COPY wait-for-it.sh .
