@@ -155,6 +155,14 @@ app.get('/presigned-url', (req, res) => {
     });
 });
 
+// Test Register route
+app.post('/register-test', upload.array('avatars', 5), async (req, res) => {
+    console.log('Files:', req.files);
+    console.log('Body:', req.body);
+
+    res.status(200).send({ message: 'Test endpoint received the data' });
+});
+
 // Register route
 app.post('/register', upload.array('avatars', 5), async (req, res) => {
     console.log('Files:', req.files);
