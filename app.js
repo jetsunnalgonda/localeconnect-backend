@@ -134,7 +134,7 @@ app.get('/', (req, res) => {
     res.send('Hello World!');
 });
 
-router.get('/test', (req, res) => {
+app.get('/test', (req, res) => {
     res.status(200).json({ message: 'Backend is working!' });
 });
 
