@@ -1,7 +1,8 @@
 datasource db {
   // provider = "mysql"
   provider = "sqlite"
-  url      = "file:./dev.db"
+  // url      = "file:./dev.db"
+  url      = "libsql://localeconnect-database-jetsunnalgonda.turso.io"
   // url      = env("TURSO_DATABASE_URL")
 }
 generator client {
