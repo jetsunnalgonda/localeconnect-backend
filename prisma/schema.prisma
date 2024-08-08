@@ -1,7 +1,8 @@
 datasource db {
   // provider = "mysql"
   provider = "sqlite"
-  url      = env("TURSO_DATABASE_URL")
+  url      = "file:./dev.db"
+  // url      = env("TURSO_DATABASE_URL")
 }
 generator client {
   provider      = "prisma-client-js"
