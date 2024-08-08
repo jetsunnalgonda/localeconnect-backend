@@ -17,7 +17,7 @@
   "dependencies": {
     "@libsql/client": "^0.8.1",
     "@prisma/adapter-libsql": "^5.18.0",
-    "@prisma/client": "^5.17.0",
+    "@prisma/client": "^5.18.0",
     "@vue/cli-service": "^5.0.8",
     "@vue/compiler-sfc": "^3.4.34",
     "bcryptjs": "^2.4.3",
