@@ -169,24 +169,24 @@ app.post('/register', upload.array('avatars', 5), async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 10);
 
         // Handle avatars array
-        // const avatars = avatarFiles.length > 0
-        //     ? avatarFiles.map(file => ({ url: file.path }))
-        //     : []; // Handle case where no files are uploaded
+        const avatars = avatarFiles.length > 0
+            ? avatarFiles.map(file => ({ url: file.path }))
+            : []; // Handle case where no files are uploaded
 
         // Upload files to S3
-        const avatarUrls = [];
-        for (const file of avatarFiles) {
-            const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1E9)}`;
-            const uploadParams = {
-                Bucket: process.env.S3_BUCKET_NAME,
-                Key: `avatars/${uniqueSuffix}-${file.originalname}`, // Unique filename
-                Body: file.buffer,
-                ContentType: file.mimetype,
-            };
+        // const avatarUrls = [];
+        // for (const file of avatarFiles) {
+        //     const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1E9)}`;
+        //     const uploadParams = {
+        //         Bucket: process.env.S3_BUCKET_NAME,
+        //         Key: `avatars/${uniqueSuffix}-${file.originalname}`, // Unique filename
+        //         Body: file.buffer,
+        //         ContentType: file.mimetype,
+        //     };
 
-            const uploadResult = await s3.upload(uploadParams).promise();
-            avatarUrls.push(uploadResult.Location); // URL of the uploaded file
-        }
+        //     const uploadResult = await s3.upload(uploadParams).promise();
+        //     avatarUrls.push(uploadResult.Location); // URL of the uploaded file
+        // }
         // Ensure location is parsed correctly
         let locationData = {};
         try {
@@ -207,7 +207,7 @@ app.post('/register', upload.array('avatars', 5), async (req, res) => {
                 email,
                 password: hashedPassword,
                 bio,
-                avatars: avatars.length > 0 ? { create: avatarUrls.map(url => ({ url })) } : undefined,
+                avatars: avatars.length > 0 ? { create: avatars } : undefined,
                 location: {
                     create: {
                         latitude: locationData.latitude || null, // Default to null if not provided
