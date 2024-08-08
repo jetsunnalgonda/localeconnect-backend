@@ -15,6 +15,10 @@
   "author": "Haluk Isik",
   "license": "ISC",
   "dependencies": {
+    "jest": "^29.7.0",
+    "nodemon": "^3.1.4",
+    "supertest": "^7.0.0",
+    
     "@prisma/client": "^5.17.0",
     "@vue/cli-service": "^5.0.8",
     "@vue/compiler-sfc": "^3.4.34",
@@ -31,8 +35,6 @@
     "ws": "^8.18.0"
   },
   "devDependencies": {
-    "jest": "^29.7.0",
-    "nodemon": "^3.1.4",
-    "supertest": "^7.0.0"
+
   }
 }
