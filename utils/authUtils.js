@@ -1,22 +1,11 @@
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
-
-// import { PrismaClient } from '@prisma/client';
-
-// const prisma = new PrismaClient();
-
-// import { PrismaClient } from '@prisma/client'
-// import { PrismaLibSQL } from '@prisma/adapter-libsql'
-// import { createClient } from '@libsql/client'
-
 import prisma from './prisma.js';
-// const libsql = () => createClient({
-//   url: `${process.env.TURSO_DATABASE_URL}`,
-//   authToken: `${process.env.TURSO_AUTH_TOKEN}`,
-// });
 
-// const adapter = new PrismaLibSQL(libsql)
-// const prisma = new PrismaClient({ adapter })
+// Function to hash passwords
+export async function hashPassword(password) {
+    return await bcrypt.hash(password, 10);
+}
 
 // Function to generate a JWT token
 export const generateToken = (user) => {
@@ -56,22 +45,6 @@ export const verifyToken = (token) => {
     throw new Error('Invalid token');
   }
 };
-
-// authenticate middleware
-// export const authenticate = (req, res, next) => {
-//   const token = req.headers.authorization?.split(' ')[1];
-//   if (token) {
-//     try {
-//       const user = verifyToken(token);
-//       req.user = user;
-//       next();
-//     } catch (error) {
-//       return res.sendStatus(403);
-//     }
-//   } else {
-//     res.sendStatus(401);
-//   }
-// };
 
 // Middleware to protect routes
 export const authenticateJWT = (req, res, next) => {
