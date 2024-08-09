@@ -22,8 +22,8 @@ dotenv.config();
 // Middleware to parse JSON bodies
 app.use(express.json());
 
-app.use(corsMiddleware);
-app.options('*', cors()); // Respond to preflight requests
+// app.use(corsMiddleware);
+// app.options('*', cors()); // Respond to preflight requests
 
 // For Client Side Routing
 // use compression
