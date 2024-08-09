@@ -17,9 +17,6 @@ dotenv.config();
 // Middleware to parse JSON bodies
 app.use(express.json());
 
-app.use(corsMiddleware);
-app.options('*', cors()); // Respond to preflight requests
-
 // Serve static files from the 'dist' directory
 app.use(express.static(path.join(__dirname, 'dist')));
 
@@ -27,6 +24,10 @@ app.use(express.static(path.join(__dirname, 'dist')));
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
+
+app.use(corsMiddleware);
+app.options('*', cors()); // Respond to preflight requests
+
 
 app.get('/', (req, res) => {
     res.send('Hello World!');
