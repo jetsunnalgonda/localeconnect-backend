@@ -3,7 +3,8 @@ import cors from 'cors';
 // Define the CORS options
 const corsOptions = {
     // origin: process.env.ALLOWED_ORIGINS || '*', 
-    origin: '*', 
+    // origin: '*', 
+    origin: 'https://localeconnect-frontend-f3009180edf8.herokuapp.com',
     methods: ['GET', 'POST', 'PUT', 'DELETE'], 
     allowedHeaders: ['Content-Type', 'Authorization'], 
     // credentials: true, 
