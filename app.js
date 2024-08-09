@@ -20,11 +20,6 @@ app.use(express.json());
 // Serve static files from the 'dist' directory
 app.use(express.static(path.join(__dirname, 'dist')));
 
-// Handle all other routes by sending the main index.html
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
-});
-
 app.use(corsMiddleware);
 app.options('*', cors()); // Respond to preflight requests
 
