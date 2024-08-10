@@ -6,6 +6,7 @@ import { initializeWebSocketServer } from './utils/websocket.js';
 
 import serveStatic  from 'serve-static';
 import path from 'path';
+import { fileURLToPath } from 'url';
 
 import registerRoute from './routes/registerRoute.js';
 import profileRoutes from './routes/profileRoutes.js'; 
