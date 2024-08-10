@@ -18,6 +18,12 @@ import urlRoutes from './routes/urlRoutes.js';
 const app = express();
 dotenv.config();
 
+app.use(corsMiddleware);
+app.options('*', cors()); // Respond to preflight requests
+
+// Middleware to parse JSON bodies
+app.use(express.json());
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 app.use("/", serveStatic(path.join(__dirname, "/dist")));
@@ -26,12 +32,6 @@ app.use("/", serveStatic(path.join(__dirname, "/dist")));
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
-
-// Middleware to parse JSON bodies
-app.use(express.json());
-
-app.use(corsMiddleware);
-app.options('*', cors()); // Respond to preflight requests
 
 app.get('/', (req, res) => {
     res.send('Hello World!');
