@@ -7,7 +7,7 @@ const router = express.Router();
 // Toggle like status for a user
 router.post('/like', authenticateJWT, async (req, res) => {
   const userId = req.user.id;
-  const { likedUserId, likeMessage } = req.body;
+  const { likedUserId } = req.body;
 
   console.log(`[INFO] Received like/unlike request from user ${userId} for user ${likedUserId}`);
 
@@ -54,17 +54,17 @@ router.post('/like', authenticateJWT, async (req, res) => {
         },
       });
 
+      // Get the ID of the newly created like
+      const likeId = like.id;
+
       // Create a notification for the liked user
-      if (likeMessage) {
-        await prisma.notification.create({
-          data: {
-            userId: likedId,
-            type: 'LIKE',
-            message: `User ${likerId} liked your profile.`,
-            message: likeMessage,
-          },
-        });
-      }
+      await prisma.notification.create({
+        data: {
+          userId: likedUserId,
+          type: 'LIKE',
+          referenceId: likeId,
+        },
+      });
 
       console.log(`[INFO] Successfully created like record from user ${userId} to user ${likedUserId}`);
       res.json(like);
