@@ -1,34 +1,28 @@
 import https from 'https';
 import { WebSocketServer } from 'ws';
 
-const clients = new Map(); // Map to store userId -> WebSocket connection
+const clients = new Set(); // Set to store WebSocket connections
 
 export function initializeWebSocketServer(app) {
     const serverIsLocal = process.env.NODE_ENV !== 'production';
     const server = https.createServer(app);
     const wss = serverIsLocal ? new WebSocketServer({ port: process.env.WEBSOCKET_PORT }) : new WebSocketServer({ server });
 
-    wss.on('connection', (ws, req) => {
-        // Extract userId from the request (assuming userId is passed in query or headers)
-        const userId = extractUserId(req); // Implement this function based on your setup
+    wss.on('connection', (ws) => {
+        // Add the new connection to the set of clients
+        clients.add(ws);
 
-        if (userId) {
-            clients.set(userId, ws); // Store the WebSocket connection
+        console.log('New client connected via WebSocket');
 
-            console.log(`User ${userId} connected via WebSocket`);
+        ws.on('message', (message) => {
+            console.log('Received:', message);
+            // Here you can implement logic to broadcast the message or handle it
+        });
 
-            ws.on('message', (message) => {
-                console.log('Received:', message);
-            });
-
-            ws.on('close', () => {
-                console.log(`User ${userId} WebSocket connection closed`);
-                clients.delete(userId); // Remove the connection when closed
-            });
-        } else {
-            console.log('Connection without userId, closing WebSocket');
-            ws.close();
-        }
+        ws.on('close', () => {
+            console.log('WebSocket connection closed');
+            clients.delete(ws); // Remove the connection when closed
+        });
     });
 
     // Start the server if it's local
@@ -37,12 +31,6 @@ export function initializeWebSocketServer(app) {
     //         console.log(`WebSocket server running on port ${process.env.WEBSOCKET_PORT || 3020}`);
     //     });
     // }
-}
-
-// Helper function to extract userId from the request
-function extractUserId(req) {
-    // This is just an example. Replace it with how you're passing userId
-    return req.headers['x-user-id'] || new URL(req.url, `http://${req.headers.host}`).searchParams.get('userId');
 }
 
 export { clients };

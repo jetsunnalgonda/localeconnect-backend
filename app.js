@@ -14,6 +14,12 @@ app.use('/', routes);
 // Start WebSocket Server
 initializeWebSocketServer(app);
 
+// API route to initialize WebSocket server
+// app.post('/initialize-websocket', (req, res) => {
+//     initializeWebSocketServer(app);
+//     res.json({ success: true });
+// });
+
 const PORT = process.env.PORT;
 // Start the server
 app.listen(PORT, () => {
