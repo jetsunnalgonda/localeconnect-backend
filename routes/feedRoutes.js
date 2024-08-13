@@ -39,7 +39,8 @@ router.get('/users', authenticateJWT, async (req, res) => {
 
 // Feed (Nearby Users) route with location and radius as parameters
 router.get('/feed', authenticateJWT, async (req, res) => {
-    const { latitude, longitude, radiusKm = 1.0 } = req.query;
+    console.log('Getting feed');
+    const { latitude, longitude, radiusKm = 1.0, page = 1, limit = 20 } = req.query;
 
     // Validate the parameters
     if (!latitude || !longitude) {
@@ -49,8 +50,10 @@ router.get('/feed', authenticateJWT, async (req, res) => {
     const radiusKmFloat = parseFloat(radiusKm);
     const latitudeFloat = parseFloat(latitude);
     const longitudeFloat = parseFloat(longitude);
+    const pageNumber = parseInt(page, 10);
+    const limitNumber = parseInt(limit, 10);
 
-    if (isNaN(latitudeFloat) || isNaN(longitudeFloat) || isNaN(radiusKmFloat)) {
+    if (isNaN(latitudeFloat) || isNaN(longitudeFloat) || isNaN(radiusKmFloat) || isNaN(pageNumber) || isNaN(limitNumber)) {
         return res.status(400).send({ message: 'Invalid parameters' });
     }
 
@@ -73,7 +76,16 @@ router.get('/feed', authenticateJWT, async (req, res) => {
                 },
             },
             include: { avatars: true, location: true },
+            skip: (pageNumber - 1) * limitNumber,
+            take: limitNumber,
         });
+
+        // const manyUsers = null; 
+        // await prisma.user.findMany({
+        //     skip: 1, //(pageNumber - 1) * limitNumber,
+        //     take: 1, //limitNumber,
+        //     include: { avatars: true, location: true },
+        // });
 
         res.json(nearbyUsers);
     } catch (error) {

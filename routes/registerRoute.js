@@ -1,6 +1,6 @@
 import express from 'express';
 import { upload } from '../multerConfig.js';
-import { hashPassword, generateToken } from '../utils/authUtils.js';
+import { hashPassword, generateAccessToken, generateRefreshToken } from '../utils/authUtils.js';
 import { parseLocationData } from '../utils/locationUtils.js';
 import { uploadAvatarsToS3 } from '../utils/s3Utils.js';
 import { createNewUser } from '../utils/userService.js';
@@ -26,8 +26,9 @@ router.post('/register', upload.array('avatars', 5), async (req, res) => {
         
         const newUser = await createNewUser({ name, email, hashedPassword, bio, avatars, locationData });
 
-        const token = generateToken(newUser);
-        res.status(201).send({ token });
+        const token = generateAccessToken(newUser);
+        const refreshToken = generateRefreshToken(newUser);
+        res.status(201).send({ token, refreshToken });
     } catch (error) {
         console.error('Error creating user:', error);
         res.status(500).send({ message: 'Error creating user', error: error.message });

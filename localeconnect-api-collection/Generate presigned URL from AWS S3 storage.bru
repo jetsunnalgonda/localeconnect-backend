@@ -1,0 +1,16 @@
+meta {
+  name: Generate presigned URL from AWS S3 storage
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:3010/generate-presigned-url?imageKey=avatars/1723226805141-431910718-7309670.jpg&Authorization=Bearer 
+  body: none
+  auth: none
+}
+
+params:query {
+  imageKey: avatars/1723226805141-431910718-7309670.jpg
+  Authorization: Bearer 
+}

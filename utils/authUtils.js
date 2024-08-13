@@ -7,18 +7,30 @@ export async function hashPassword(password) {
     return await bcrypt.hash(password, 10);
 }
 
-// Function to generate a JWT token
-export const generateToken = (user) => {
-  const token = jwt.sign(
-    {
-      id: user.id,
-      email: user.email,
-    },
-    process.env.JWT_SECRET,
-    { expiresIn: '1h' }
-  );
-  return token;
+export const generateAccessToken = (user) => {
+  return jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '15m' });
 };
+
+export const generateRefreshToken = (user) => {
+  return jwt.sign({ id: user.id }, process.env.JWT_REFRESH_SECRET, { expiresIn: '7d' });
+};
+
+export const verifyRefreshToken = (token) => {
+  return jwt.verify(token, JWT_SECRET);
+};
+
+// Function to generate a JWT token
+// export const generateAccessToken = (user) => {
+//   const token = jwt.sign(
+//     {
+//       id: user.id,
+//       email: user.email,
+//     },
+//     process.env.JWT_SECRET,
+//     { expiresIn: '1h' }
+//   );
+//   return token;
+// };
 
 // Function to authenticate user credentials
 export const authenticateUser = async (email, password) => {
@@ -49,6 +61,7 @@ export const verifyToken = (token) => {
 // Middleware to protect routes
 export const authenticateJWT = (req, res, next) => {
   const token = req.headers.authorization?.split(' ')[1];
+  console.log('authenticating, token', token);
   if (token) {
     try {
       const user = verifyToken(token);
