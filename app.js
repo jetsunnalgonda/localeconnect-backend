@@ -7,12 +7,14 @@ import routes from './routes/index.js';
 const app = express();
 dotenv.config();
 
+// Start WebSocket Server
+initializeWebSocketServer(app);
+
 setupMiddleware(app);
 
 app.use('/', routes);
 
-// Start WebSocket Server
-initializeWebSocketServer(app);
+
 
 // API route to initialize WebSocket server
 // app.post('/initialize-websocket', (req, res) => {
