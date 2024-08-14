@@ -31,9 +31,14 @@ wss.on('connection', (ws) => {
     console.log('Client connected');
 
     // Example of sending data to the client every second
+    // const intervalId = setInterval(() => {
+    //     ws.send(new Date().toTimeString());
+    // }, 1000);
+
     const intervalId = setInterval(() => {
-        ws.send(new Date().toTimeString());
-    }, 1000);
+        const message = JSON.stringify({ time: new Date().toTimeString() });
+        ws.send(message);
+    }, 1000);    
 
     ws.on('close', () => {
         console.log('Client disconnected');

@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WebSocket Test</title>
 </head>
+
 <body>
     <h1>WebSocket Server Time</h1>
     <div id="server-time">Waiting for server time...</div>
@@ -15,8 +17,11 @@
 
         ws.onmessage = function (event) {
             var el = document.getElementById('server-time');
-            el.innerHTML = 'Server time: ' + event.data;
+            const data = JSON.parse(event.data); // Parse the JSON string
+            el.innerHTML = 'Server time: ' + data.time; // Access the "time" property
         };
+
     </script>
 </body>
+
 </html>
