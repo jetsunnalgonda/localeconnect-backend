@@ -1,3 +1,4 @@
+import http from 'http';
 import https from 'https';
 import { WebSocketServer } from 'ws';
 
@@ -5,8 +6,10 @@ const clients = new Set(); // Set to store WebSocket connections
 
 export function initializeWebSocketServer(app) {
     const serverIsLocal = process.env.NODE_ENV !== 'production';
-    const server = https.createServer(app);
-    const wss = serverIsLocal ? new WebSocketServer({ port: process.env.WEBSOCKET_PORT }) : new WebSocketServer({ server });
+    const server = serverIsLocal ? http.createServer(app) : https.createServer(app);
+    // const wss = serverIsLocal ? new WebSocketServer({ port: process.env.WEBSOCKET_PORT }) : new WebSocketServer({ server });
+
+    const wss = new WebSocketServer({ port: process.env.PORT || 3020 }); // Attach WebSocket server to the existing HTTP server
 
     wss.on('connection', (ws) => {
         // Add the new connection to the set of clients
@@ -25,6 +28,9 @@ export function initializeWebSocketServer(app) {
         });
     });
 
+    // server.listen(process.env.PORT, () => {
+    //     console.log(`Websocket Server is running on port ${process.env.PORT}`);
+    // });
     // Start the server if it's local
     // if (serverIsLocal) {
     //     server.listen(process.env.WEBSOCKET_PORT || 3020, () => {
