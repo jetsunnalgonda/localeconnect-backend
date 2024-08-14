@@ -1,5 +1,4 @@
 import express from 'express';
-import http from 'http';
 import dotenv from 'dotenv';
 import { WebSocketServer } from 'ws';
 import setupMiddleware from './utils/setupMiddleware.js';
@@ -18,16 +17,14 @@ setupMiddleware(app);
 
 app.use('/', routes);
 
-var server = http.createServer(app)
-
+// Create an HTTP server using the Express app
 const PORT = process.env.PORT || 3010;
-server.listen(PORT, () => {
+const server = app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
 
 // Initialize WebSocket Server using the same HTTP server
 const wss = new WebSocketServer({ server });
-console.log("websocket server created")
 
 // Handle WebSocket connections
 wss.on('connection', (ws) => {
@@ -42,7 +39,6 @@ wss.on('connection', (ws) => {
         const message = JSON.stringify({ time: new Date().toTimeString() });
         ws.send(message);
     }, 1000);    
-    console.log("websocket connection open")
 
     ws.on('close', () => {
         console.log('Client disconnected');
