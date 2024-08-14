@@ -1,6 +1,7 @@
 import express from 'express';
 import { authenticateUser, generateAccessToken, generateRefreshToken } from '../utils/authUtils.js';
 import prisma from '../utils/prisma.js';
+import jwt from 'jsonwebtoken';
 
 const router = express.Router();
 
@@ -14,6 +15,10 @@ router.post('/login', async (req, res) => {
         console.log(user);
         const token = generateAccessToken(user);
         const refreshToken = generateRefreshToken(user);
+
+        const decodedRefreshToken = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
+        console.log('Decoded Refresh Token at login:', decodedRefreshToken);
+    
         res.send({ token, refreshToken });
     } catch (error) {
         console.log(error.message)
