@@ -21,6 +21,17 @@
             el.innerHTML = 'Server time: ' + data.time; // Access the "time" property
         };
 
+        // ws.onmessage = function (event) {
+        //     var el = document.getElementById('server-time');
+        //     try {
+        //         const data = JSON.parse(event.data); // Parse the JSON string
+        //         el.innerHTML = 'Server time: ' + data.time; // Access the "time" property
+        //     } catch (e) {
+        //         console.error("Failed to parse WebSocket message:", e);
+        //     }
+        // };
+
+
     </script>
 </body>
 
