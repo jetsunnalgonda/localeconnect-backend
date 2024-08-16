@@ -5,6 +5,7 @@ const clients = new Set(); // Store all connected clients
 // Initialize WebSocket Server
 export function initializeWebSocketServer(server) {
   const wss = new WebSocketServer({ server });
+//   const wss = new WebSocketServer('wss://' + server );
 
   wss.on('connection', (ws, request) => {
     clients.add(ws); // Add the new connection to the set of clients
@@ -75,10 +76,10 @@ function broadcastNotification(actionType, ws, data, message) {
 function broadcastMessageToUser(targetUserId, message) {
   clients.forEach((client) => {
     // console.log(`[WebSocket Server] client: ${client}`);
-    console.log(`[WebSocket Server] typeof WebSocket.OPEN: ${typeof WebSocket.OPEN}`);
-    console.log(`[WebSocket Server] typeof client.readyState: ${typeof client.readyState}`);
-    console.log(`[WebSocket Server] typeof targetUserId: ${typeof targetUserId}`);
-    console.log(`[WebSocket Server] typeof client.userId: ${typeof client.userId}`);
+    // console.log(`[WebSocket Server] typeof WebSocket.OPEN: ${typeof WebSocket.OPEN}`);
+    // console.log(`[WebSocket Server] typeof client.readyState: ${typeof client.readyState}`);
+    // console.log(`[WebSocket Server] typeof targetUserId: ${typeof targetUserId}`);
+    // console.log(`[WebSocket Server] typeof client.userId: ${typeof client.userId}`);
     if (client.readyState == WebSocket.OPEN && client.userId == targetUserId) {
         // console.log('[Websocket Server] Hello!')
       client.send(JSON.stringify(message));
