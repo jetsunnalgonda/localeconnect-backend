@@ -15,6 +15,7 @@ export function initializeWebSocketServer(server) {
     const urlParams = new URLSearchParams(request.url.split('?')[1]);
     const userId = urlParams.get('userId');
     ws.userId = userId; // Associate the WebSocket connection with the userId
+    console.log('Connected client userId:', ws.userId);
 
     ws.on('message', (message) => {
       try {
@@ -73,9 +74,16 @@ function broadcastNotification(actionType, ws, data, message) {
 // Function to broadcast a message to a specific user
 function broadcastMessageToUser(targetUserId, message) {
   clients.forEach((client) => {
-    if (client.readyState === WebSocket.OPEN && client.userId === targetUserId) {
+    // console.log(`[WebSocket Server] client: ${client}`);
+    console.log(`[WebSocket Server] typeof WebSocket.OPEN: ${typeof WebSocket.OPEN}`);
+    console.log(`[WebSocket Server] typeof client.readyState: ${typeof client.readyState}`);
+    console.log(`[WebSocket Server] typeof targetUserId: ${typeof targetUserId}`);
+    console.log(`[WebSocket Server] typeof client.userId: ${typeof client.userId}`);
+    if (client.readyState == WebSocket.OPEN && client.userId == targetUserId) {
+        // console.log('[Websocket Server] Hello!')
       client.send(JSON.stringify(message));
       console.log('[WebSocket Server] Broadcasted message to user:', targetUserId);
+      return;
     }
   });
 }
