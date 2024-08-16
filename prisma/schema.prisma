@@ -17,6 +17,12 @@ model User {
   email          String         @unique
   password       String
   bio            String?
+  heightCm        Float?          // Store height in centimeters
+  gender          String?
+  isOnline        Boolean         @default(false)
+  lastActiveAt    DateTime?
+  accountStatus   String          @default("active") // e.g., active, suspended
+
   avatars        Avatar[]
   location       Location?      @relation(fields: [locationId], references: [id])
   locationId     Int?
