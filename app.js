@@ -1,5 +1,5 @@
 import express from 'express';
-import http from 'http';
+import https from 'https';
 import dotenv from 'dotenv';
 // import { WebSocketServer } from 'ws';
 import setupMiddleware from './utils/setupMiddleware.js';
@@ -19,9 +19,9 @@ setupMiddleware(app);
 
 app.use('/', routes);
 
-var server = http.createServer(app)
+var server = https.createServer(app)
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3010;
 server.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
