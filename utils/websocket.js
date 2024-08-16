@@ -5,7 +5,7 @@ const clients = new Set(); // Store all connected clients
 // Initialize WebSocket Server
 export function initializeWebSocketServer(server) {
   const wss = new WebSocketServer({ server });
-//   const wss = new WebSocketServer('wss://' + server );
+  //   const wss = new WebSocketServer('wss://' + server );
 
   wss.on('connection', (ws, request) => {
     clients.add(ws); // Add the new connection to the set of clients
@@ -33,7 +33,19 @@ export function initializeWebSocketServer(server) {
       }
     });
 
+    // Send a ping every 30 seconds to keep the connection alive
+    const keepAliveInterval = setInterval(() => {
+      if (ws.readyState === ws.OPEN) {
+        ws.ping();
+      }
+    }, 30000); // Ping every 30 seconds
+
+    ws.on('pong', () => {
+      console.log('Received pong from client');
+    });
+
     ws.on('close', () => {
+      clearInterval(keepAliveInterval);
       console.log('WebSocket connection closed');
       clients.delete(ws); // Remove the client when the connection closes
     });
@@ -81,7 +93,7 @@ function broadcastMessageToUser(targetUserId, message) {
     // console.log(`[WebSocket Server] typeof targetUserId: ${typeof targetUserId}`);
     // console.log(`[WebSocket Server] typeof client.userId: ${typeof client.userId}`);
     if (client.readyState == WebSocket.OPEN && client.userId == targetUserId) {
-        // console.log('[Websocket Server] Hello!')
+      // console.log('[Websocket Server] Hello!')
       client.send(JSON.stringify(message));
       console.log('[WebSocket Server] Broadcasted message to user:', targetUserId);
       return;
