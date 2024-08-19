@@ -21,6 +21,7 @@ pnpm-debug.log*
 
 # Temporary backup files
 app_old.js
+src/components/_old
 
 # Other files
 certificate.crt

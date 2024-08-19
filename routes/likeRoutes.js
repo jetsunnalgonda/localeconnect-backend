@@ -43,6 +43,16 @@ router.post('/like', authenticateJWT, async (req, res) => {
           id: existingLike.id,
         },
       });
+
+      // Optionally delete the notification as well
+      await prisma.notification.deleteMany({
+        where: {
+          userId: likedUserId,
+          type: 'LIKE',
+          referenceId: existingLike.id,
+        },
+      });
+      
       console.log(`[INFO] Successfully removed like record from user ${userId} to user ${likedUserId}`);
       res.status(200).send({ message: 'Like removed successfully' });
     } else {

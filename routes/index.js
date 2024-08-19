@@ -9,6 +9,7 @@ import urlRoutes from './urlRoutes.js';
 import refreshRoute from './refreshRoute.js';
 import authRoutes from './authRoutes.js';
 import otherRoutes from './otherRoutes.js';
+import notificationRoutes from './notificationRoutes.js';
 
 const router = Router();
 
@@ -20,6 +21,7 @@ router.use('/', feedRoutes);
 router.use('/', urlRoutes);
 router.use('/', refreshRoute);
 router.use('/', authRoutes)
+router.use('/', notificationRoutes)
 router.use('/', otherRoutes);
 
 export default router;

@@ -55,8 +55,17 @@ export function initializeWebSocketServer(server) {
 // Generalized handler for user actions
 function handleUserAction(action, ws, data) {
   switch (action) {
+    case 'MESSAGE':
+      broadcastNotification('MESSAGE', ws, data, `sent you a message`);
+      break;
     case 'LIKE':
       broadcastNotification('LIKE', ws, data, `liked your profile`);
+      break;
+    case 'UPDATE_LIKE_ID':
+      broadcastNotification('UPDATE_LIKE_ID', ws, data, 'updated like id'); // Handle UPDATE_LIKE_ID action
+      break;
+    case 'REMOVE_LIKE':
+      broadcastNotification('REMOVE_LIKE', ws, data, 'removed like'); 
       break;
     case 'COMMENT':
       broadcastNotification('COMMENT', ws, data, `commented: ${data.comment}`);
@@ -79,10 +88,51 @@ function broadcastNotification(actionType, ws, data, message) {
       type: actionType,
       userId: ws.userId,
       userName: data.userName,
+      tempId: data.tempId,
+      referenceId: data.referenceId,
       message,
     },
   });
 }
+
+// Broadcast a notification to the target user
+async function broadcastNotification_more(actionType, ws, data, message) {
+  console.log(`[WebSocket Server] User ${ws.userId} performed ${actionType} on user with ID: ${data.userId}`);
+
+  try {
+    // Fetch the full notification from the database
+    const notification = await prisma.notification.findUnique({
+      where: {
+        id: data.notificationId, // Assuming data contains the notificationId
+      },
+      include: {
+        // Include extra information depending on the type of notification
+        ...(actionType === 'LIKE' && { like: { include: { liker: true } } }),
+        ...(actionType === 'MESSAGE' && { message: { include: { sender: true } } }),
+        // Add other cases as needed
+      },
+    });
+
+    // Broadcast the full notification data to the user
+    broadcastMessageToUser(data.userId, {
+      action: 'notification',
+      data: {
+        id: notification.id,
+        type: notification.type,
+        referenceId: notification.referenceId,
+        isRead: notification.isRead,
+        createdAt: notification.createdAt,
+        extraInfo: notification.like ? { liker: notification.like.liker } :
+          notification.message ? { sender: notification.message.sender } :
+            null,
+        // You can add more fields based on your structure
+      },
+    });
+  } catch (error) {
+    console.error(`[WebSocket Server] Error broadcasting notification: ${error.message}`);
+  }
+}
+
 
 // Function to broadcast a message to a specific user
 function broadcastMessageToUser(targetUserId, message) {
