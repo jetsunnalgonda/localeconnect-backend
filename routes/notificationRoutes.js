@@ -28,6 +28,7 @@ router.get('/notifications', authenticateJWT, async (req, res) => {
   const userId = req.user.id;
 
   try {
+    // Fetch notifications for the user
     const notifications = await prisma.notification.findMany({
       where: { userId },
       orderBy: { createdAt: 'desc' },
@@ -42,38 +43,65 @@ router.get('/notifications', authenticateJWT, async (req, res) => {
           case 'LIKE':
             extraInfo = await prisma.like.findUnique({
               where: { id: notification.referenceId },
-              include: { liker: true }, // Fetch the user who liked the profile
+              include: {
+                liker: {
+                  include: {
+                    avatars: true,   // Include the liker’s avatars
+                    location: true,  // Include the liker’s location
+                  },
+                },
+              },
             });
             break;
+
           case 'MESSAGE':
             extraInfo = await prisma.message.findUnique({
               where: { id: notification.referenceId },
-              include: { sender: true }, // Fetch the user who sent the message
+              include: {
+                sender: {
+                  include: {
+                    avatars: true,   // Include the sender’s avatars
+                    location: true,  // Include the sender’s location
+                  },
+                },
+              },
             });
             break;
+
           case 'FOLLOW':
             extraInfo = await prisma.follow.findUnique({
               where: { id: notification.referenceId },
-              include: { follower: true }, // Fetch the user who followed
+              include: {
+                follower: {
+                  include: {
+                    avatars: true,   // Include the follower’s avatars
+                    location: true,  // Include the follower’s location
+                  },
+                },
+              },
             });
             break;
+
           default:
             break;
         }
 
+        // Attach the fetched data to the notification
         return {
           ...notification,
-          extraInfo, // Attach the fetched data to the notification
+          extraInfo,
         };
       })
     );
 
+    // Return the detailed notifications
     res.json(detailedNotifications);
   } catch (error) {
     console.error('Error fetching notifications:', error);
-    res.status(500).json({ error: 'An error occurred while fetching notifications.' });
+    res.status(500).json({ message: 'Error fetching notifications' });
   }
 });
+
 
 
 export default router;

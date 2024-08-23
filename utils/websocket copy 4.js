@@ -56,40 +56,30 @@ export function initializeWebSocketServer(server) {
 function handleUserAction(action, ws, data) {
   switch (action) {
     case 'MESSAGE':
-      broadcastMessage(action, ws, data);
+      broadcastNotification('MESSAGE', ws, data, `sent you a message`);
       break;
     case 'LIKE':
+      broadcastNotification('LIKE', ws, data, `liked your profile`);
+      break;
     case 'UPDATE_LIKE_ID':
+      broadcastNotification('UPDATE_LIKE_ID', ws, data, 'updated like id'); // Handle UPDATE_LIKE_ID action
+      break;
     case 'REMOVE_LIKE':
+      broadcastNotification('REMOVE_LIKE', ws, data, 'removed like'); 
+      break;
     case 'COMMENT':
+      broadcastNotification('COMMENT', ws, data, `commented: ${data.comment}`);
+      break;
     case 'FOLLOW':
-      broadcastNotification(action, ws, data);
+      broadcastNotification('FOLLOW', ws, data, `started following you`);
       break;
     default:
       console.warn('Unknown action:', action);
   }
 }
 
-// Broadcast the message to the target user
-function broadcastMessage(actionType, ws, data) {
-  console.log(`[WebSocket Server] User ${ws.userId} performed ${actionType} on user with ID: ${data.userId}`);
-
-  broadcastMessageToUser(data.userId, {
-    action: 'message',
-    data: {
-      type: actionType,
-      userId: ws.userId,
-      userName: data.userName,
-      tempId: data.tempId,
-      referenceId: data.referenceId,
-      createdAt: data.createdAt,
-      message: 'broadcast message',
-    },
-  });
-}
-
 // Broadcast a notification to the target user
-function broadcastNotification(actionType, ws, data) {
+function broadcastNotification(actionType, ws, data, message) {
   console.log(`[WebSocket Server] User ${ws.userId} performed ${actionType} on user with ID: ${data.userId}`);
 
   broadcastMessageToUser(data.userId, {
@@ -101,7 +91,7 @@ function broadcastNotification(actionType, ws, data) {
       tempId: data.tempId,
       referenceId: data.referenceId,
       createdAt: data.createdAt,
-      message: 'broadcast notificaiton',
+      message,
     },
   });
 }
