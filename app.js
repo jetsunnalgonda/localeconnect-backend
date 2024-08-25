@@ -28,7 +28,25 @@ const staticFileMiddleware = express.static(path.join(__dirname, 'dist'));
 app.use(history({
   index: '/index.html',
   rewrites: [
-    { from: /^\/api/, to: context => context.parsedUrl.pathname } // Skip API routes
+    { from: /^\/api/, to: context => context.parsedUrl.pathname }, // Skip API routes
+    {
+      from: /^\/login\/.*$/,
+      to: function(context) {
+        return '/#' + context.parsedUrl.pathname;
+      }
+    },
+    {
+      from: /^\/profile\/.*$/,
+      to: function(context) {
+        return '/#' + context.parsedUrl.pathname;
+      }
+    },
+    {
+      from: /^\/notifications\/.*$/,
+      to: function(context) {
+        return '/#' + context.parsedUrl.pathname;
+      }
+    }
   ]
 }));
 
