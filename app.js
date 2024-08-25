@@ -24,8 +24,16 @@ app.use(express.static(path.join(__dirname, 'dist')));
 app.use('/', routes);
 
 // Catch-all route to serve index.html for any unknown routes
+// app.get('*', (req, res) => {
+//     res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+// });
+
+app.get('/hello', (req, res) => {
+    res.redirect('/'); // Redirects to the home page of your frontend
+});
+
 app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+    res.redirect('/'); // Redirects to the home page of your frontend
 });
 
 var server = http.createServer(app)
