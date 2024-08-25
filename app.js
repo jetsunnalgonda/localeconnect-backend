@@ -10,25 +10,25 @@ import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import { initializeWebSocketServer } from './utils/websocket.js';
 
+dotenv.config();
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-
-dotenv.config();
 
 const app = express();
 setupMiddleware(app);
 
-app.use('/', routes);
-
 // Serve static files from the 'dist' directory
 app.use(express.static(path.join(__dirname, 'dist')));
 
-// Catch-all route to serve index.html for any unknown routes
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
-});
+app.use('/', routes);
 
 var server = http.createServer(app)
+
+// Catch-all route to serve index.html for any unknown routes
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+});
 
 const PORT = process.env.PORT || 3010;
 server.listen(PORT, () => {
