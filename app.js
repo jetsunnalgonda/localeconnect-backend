@@ -10,6 +10,8 @@ import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import { initializeWebSocketServer } from './utils/websocket.js';
 
+import history from 'connect-history-api-fallback';
+
 dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
@@ -19,22 +21,24 @@ const app = express();
 setupMiddleware(app);
 
 // Serve static files from the 'dist' directory
-app.use(express.static(path.join(__dirname, 'dist')));
+// app.use(express.static(path.join(__dirname, 'dist')));
 
 app.use('/', routes);
+
+app.use(history());
 
 // Catch-all route to serve index.html for any unknown routes
 // app.get('*', (req, res) => {
 //     res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 // });
 
-app.get('/hello', (req, res) => {
-    res.redirect('/'); // Redirects to the home page of your frontend
-});
+// app.get('/hello', (req, res) => {
+//     res.redirect('/'); // Redirects to the home page of your frontend
+// });
 
-app.get('*', (req, res) => {
-    res.redirect('/'); // Redirects to the home page of your frontend
-});
+// app.get('*', (req, res) => {
+//     res.redirect('/'); // Redirects to the home page of your frontend
+// });
 
 var server = http.createServer(app)
 
