@@ -6,19 +6,24 @@ import path from 'path';
 import setupMiddleware from './utils/setupMiddleware.js';
 import routes from './routes/index.js';
 
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
+// import { fileURLToPath } from 'url';
+// import { dirname } from 'path';
 import { initializeWebSocketServer } from './utils/websocket.js';
 
-// import history from 'connect-history-api-fallback';
+import serveStatic from 'serve-static';
+import history from 'connect-history-api-fallback';
 
 dotenv.config();
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+// const __filename = fileURLToPath(import.meta.url);
+// const __dirname = dirname(__filename);
 
 const app = express();
 setupMiddleware(app);
+
+app.use(history({
+  // verbose: true
+}));
 
 // Serve static files from the 'dist' directory
 // app.use(express.static(path.join(__dirname, 'dist')));
