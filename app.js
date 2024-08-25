@@ -25,7 +25,19 @@ setupMiddleware(app);
 
 app.use('/', routes);
 
-app.use(history());
+const staticFileMiddleware = express.static('assets');
+app.use(staticFileMiddleware);
+app.use(history({
+  disableDotRule: true,
+  verbose: true
+}));
+app.use(staticFileMiddleware);
+
+app.get('/users/5.json', (req, res) => {
+  res.json({
+    name: 'Tom Mason'
+  });
+});
 
 // Catch-all route to serve index.html for any unknown routes
 // app.get('*', (req, res) => {
@@ -44,7 +56,7 @@ var server = http.createServer(app)
 
 const PORT = process.env.PORT || 3010;
 server.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+  console.log(`Server is running on port ${PORT}`);
 });
 
 initializeWebSocketServer(server);
@@ -76,5 +88,5 @@ initializeWebSocketServer(server);
 
 // Serve a simple index.html for WebSocket testing
 app.get('/', (req, res) => {
-    res.sendFile('index.html', { root: __dirname });
+  res.sendFile('index.html', { root: __dirname });
 });
