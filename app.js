@@ -23,12 +23,12 @@ app.use(express.static(path.join(__dirname, 'dist')));
 
 app.use('/', routes);
 
-var server = http.createServer(app)
-
 // Catch-all route to serve index.html for any unknown routes
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
+
+var server = http.createServer(app)
 
 const PORT = process.env.PORT || 3010;
 server.listen(PORT, () => {
