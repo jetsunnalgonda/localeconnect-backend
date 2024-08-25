@@ -10,7 +10,7 @@ import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import { initializeWebSocketServer } from './utils/websocket.js';
 
-import serveStatic from 'serve-static';
+// import serveStatic from 'serve-static';
 import history from 'connect-history-api-fallback';
 
 dotenv.config();
@@ -21,29 +21,41 @@ const __dirname = dirname(__filename);
 const app = express();
 setupMiddleware(app);
 
+// Serve static files from the dist directory (built Vue.js app)
+const staticFileMiddleware = express.static(path.join(__dirname, 'dist'));
+
+// Use connect-history-api-fallback middleware before serving static files
 app.use(history({
-  // verbose: true
+  index: '/index.html',
+  rewrites: [
+    { from: /^\/api/, to: context => context.parsedUrl.pathname } // Skip API routes
+  ]
 }));
-app.use(express.static(__dirname + '/dist'));
+
+// Serve the static files after the history fallback middleware
+app.use(staticFileMiddleware);
 
 // Middleware to rewrite URLs to hash-based routes
-app.get('*', (req, res, next) => {
-  // Ignore API routes or specific paths that shouldn't be redirected
-  // if (req.path.startsWith('/api')) {
-  //   return next();
-  // }
+// app.get('*', (req, res, next) => {
+//   // Ignore API routes or specific paths that shouldn't be redirected
+//   if (req.path.startsWith('/api')) {
+//     return next();
+//   }
+//   if (req.path.startsWith('/#')) {
+//     return next();
+//   }
 
-  // Rewrite URL to hash-based routing for the frontend
-  const frontendUrl = `/#/${req.url}`;
+//   // Rewrite URL to hash-based routing for the frontend
+//   const frontendUrl = `/#/${req.url}`;
   
-  // Redirect to hash-based URL
-  res.redirect(frontendUrl);
-});
+//   // Redirect to hash-based URL
+//   res.redirect(frontendUrl);
+// });
 
 // Serve static files from the 'dist' directory
 // app.use(express.static(path.join(__dirname, 'dist')));
 
-app.use('/', routes);
+app.use('/api', routes);
 
 var server = http.createServer(app)
 
