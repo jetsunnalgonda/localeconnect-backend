@@ -1,6 +1,7 @@
 import express from 'express';
 import http from 'http';
 import dotenv from 'dotenv';
+import path from 'path';
 // import { WebSocketServer } from 'ws';
 import setupMiddleware from './utils/setupMiddleware.js';
 import routes from './routes/index.js';
@@ -18,6 +19,14 @@ const app = express();
 setupMiddleware(app);
 
 app.use('/', routes);
+
+// Serve static files from the 'dist' directory
+app.use(express.static(path.join(__dirname, 'dist')));
+
+// Catch-all route to serve index.html for any unknown routes
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+});
 
 var server = http.createServer(app)
 
