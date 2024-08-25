@@ -46,7 +46,8 @@ app.use(history({
       to: function(context) {
         return '/#' + context.parsedUrl.pathname;
       }
-    }
+    },
+    { from: /./, to: '/index.html' } // Redirect all other routes to index.html
   ]
 }));
 
