@@ -10,7 +10,7 @@ import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import { initializeWebSocketServer } from './utils/websocket.js';
 
-import history from 'connect-history-api-fallback';
+// import history from 'connect-history-api-fallback';
 
 dotenv.config();
 
@@ -24,20 +24,6 @@ setupMiddleware(app);
 // app.use(express.static(path.join(__dirname, 'dist')));
 
 app.use('/', routes);
-
-const staticFileMiddleware = express.static('assets');
-app.use(staticFileMiddleware);
-app.use(history({
-  disableDotRule: true,
-  verbose: true
-}));
-app.use(staticFileMiddleware);
-
-app.get('/users/5.json', (req, res) => {
-  res.json({
-    name: 'Tom Mason'
-  });
-});
 
 // Catch-all route to serve index.html for any unknown routes
 // app.get('*', (req, res) => {
