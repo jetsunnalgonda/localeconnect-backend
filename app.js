@@ -6,8 +6,8 @@ import path from 'path';
 import setupMiddleware from './utils/setupMiddleware.js';
 import routes from './routes/index.js';
 
-// import { fileURLToPath } from 'url';
-// import { dirname } from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 import { initializeWebSocketServer } from './utils/websocket.js';
 
 import serveStatic from 'serve-static';
@@ -15,8 +15,8 @@ import history from 'connect-history-api-fallback';
 
 dotenv.config();
 
-// const __filename = fileURLToPath(import.meta.url);
-// const __dirname = dirname(__filename);
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const app = express();
 setupMiddleware(app);
@@ -24,24 +24,26 @@ setupMiddleware(app);
 app.use(history({
   // verbose: true
 }));
+app.use(express.static(__dirname + '/dist'));
+
+// Middleware to rewrite URLs to hash-based routes
+app.get('*', (req, res, next) => {
+  // Ignore API routes or specific paths that shouldn't be redirected
+  // if (req.path.startsWith('/api')) {
+  //   return next();
+  // }
+
+  // Rewrite URL to hash-based routing for the frontend
+  const frontendUrl = `/#/${req.url}`;
+  
+  // Redirect to hash-based URL
+  res.redirect(frontendUrl);
+});
 
 // Serve static files from the 'dist' directory
 // app.use(express.static(path.join(__dirname, 'dist')));
 
 app.use('/', routes);
-
-// Catch-all route to serve index.html for any unknown routes
-// app.get('*', (req, res) => {
-//     res.sendFile(path.join(__dirname, 'dist', 'index.html'));
-// });
-
-// app.get('/hello', (req, res) => {
-//     res.redirect('/'); // Redirects to the home page of your frontend
-// });
-
-// app.get('*', (req, res) => {
-//     res.redirect('/'); // Redirects to the home page of your frontend
-// });
 
 var server = http.createServer(app)
 
@@ -51,31 +53,6 @@ server.listen(PORT, () => {
 });
 
 initializeWebSocketServer(server);
-
-// Initialize WebSocket Server using the same HTTP server
-// const wss = new WebSocketServer({ server });
-// console.log("websocket server created")
-
-// // Handle WebSocket connections
-// wss.on('connection', (ws) => {
-//     console.log('Client connected');
-
-//     // Example of sending data to the client every second
-//     // const intervalId = setInterval(() => {
-//     //     ws.send(new Date().toTimeString());
-//     // }, 1000);
-
-//     const intervalId = setInterval(() => {
-//         const message = JSON.stringify({ time: new Date().toTimeString() });
-//         ws.send(message);
-//     }, 1000);    
-//     console.log("websocket connection open")
-
-//     ws.on('close', () => {
-//         console.log('Client disconnected');
-//         clearInterval(intervalId); // Clear the interval when the client disconnects
-//     });
-// });
 
 // Serve a simple index.html for WebSocket testing
 app.get('/', (req, res) => {
