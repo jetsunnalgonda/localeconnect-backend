@@ -21,7 +21,7 @@ setupMiddleware(app);
 // Serve static files from the 'dist' directory
 app.use(express.static(path.join(__dirname, 'dist')));
 
-app.use('/', routes);
+app.use('/api', routes);
 
 // Catch-all route to serve index.html for any unknown routes
 app.get('*', (req, res) => {
