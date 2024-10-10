@@ -74,7 +74,7 @@ app.use(staticFileMiddleware);
 // Serve static files from the 'dist' directory
 // app.use(express.static(path.join(__dirname, 'dist')));
 
-app.use('/api', routes);
+app.use('/', routes);
 
 var server = http.createServer(app)
 

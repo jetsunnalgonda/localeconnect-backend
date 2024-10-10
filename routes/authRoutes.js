@@ -1,7 +1,7 @@
 // routes/authRoutes.js
 import express from 'express';
-import { generateAccessToken } from '../utils/authUtils.js';
-import { authenticateJWT } from '../auth copy.js';
+import { generateAccessToken, authenticateJWT } from '../utils/authUtils.js';
+// import { authenticateJWT } from '../auth copy.js';
 
 const router = express.Router();
 
