@@ -25,31 +25,31 @@ setupMiddleware(app);
 const staticFileMiddleware = express.static(path.join(__dirname, 'dist'));
 
 // Use connect-history-api-fallback middleware before serving static files
-app.use(history({
-  index: '/index.html',
-  rewrites: [
-    { from: /^\/api/, to: context => context.parsedUrl.pathname }, // Skip API routes
-    {
-      from: /^\/login\/.*$/,
-      to: function(context) {
-        return '/#' + context.parsedUrl.pathname;
-      }
-    },
-    {
-      from: /^\/profile\/.*$/,
-      to: function(context) {
-        return '/#' + context.parsedUrl.pathname;
-      }
-    },
-    {
-      from: /^\/notifications\/.*$/,
-      to: function(context) {
-        return '/#' + context.parsedUrl.pathname;
-      }
-    },
-    { from: /./, to: '/index.html' } // Redirect all other routes to index.html
-  ]
-}));
+// app.use(history({
+//   index: '/index.html',
+//   rewrites: [
+//     { from: /^\/api/, to: context => context.parsedUrl.pathname }, // Skip API routes
+//     {
+//       from: /^\/login\/.*$/,
+//       to: function(context) {
+//         return '/#' + context.parsedUrl.pathname;
+//       }
+//     },
+//     {
+//       from: /^\/profile\/.*$/,
+//       to: function(context) {
+//         return '/#' + context.parsedUrl.pathname;
+//       }
+//     },
+//     {
+//       from: /^\/notifications\/.*$/,
+//       to: function(context) {
+//         return '/#' + context.parsedUrl.pathname;
+//       }
+//     },
+//     { from: /./, to: '/index.html' } // Redirect all other routes to index.html
+//   ]
+// }));
 
 // Serve the static files after the history fallback middleware
 app.use(staticFileMiddleware);
@@ -73,6 +73,11 @@ app.use(staticFileMiddleware);
 
 // Serve static files from the 'dist' directory
 // app.use(express.static(path.join(__dirname, 'dist')));
+
+app.use((req, res, next) => {
+  console.log(`Request URL: ${req.url} | Method: ${req.method}`);
+  next();
+});
 
 app.use('/', routes);
 

@@ -39,11 +39,15 @@ router.get('/users', authenticateJWT, async (req, res) => {
 
 // Feed (Nearby Users) route with location and radius as parameters
 router.get('/feed', authenticateJWT, async (req, res) => {
-    console.log('Getting feed');
+    console.log('--- Start of /feed route ---');
+    console.log('Authenticated user:', req.user.id);  // Log the user ID from JWT
+
     const { latitude, longitude, radiusKm = 1.0, page = 1, limit = 20 } = req.query;
+    console.log('Received query params:', { latitude, longitude, radiusKm, page, limit });
 
     // Validate the parameters
     if (!latitude || !longitude) {
+        console.log('Missing latitude or longitude');
         return res.status(400).send({ message: 'Latitude and longitude are required' });
     }
 
@@ -53,14 +57,25 @@ router.get('/feed', authenticateJWT, async (req, res) => {
     const pageNumber = parseInt(page, 10);
     const limitNumber = parseInt(limit, 10);
 
+    console.log('Parsed params:', { latitudeFloat, longitudeFloat, radiusKmFloat, pageNumber, limitNumber });
+
     if (isNaN(latitudeFloat) || isNaN(longitudeFloat) || isNaN(radiusKmFloat) || isNaN(pageNumber) || isNaN(limitNumber)) {
+        console.log('Invalid parameter values');
         return res.status(400).send({ message: 'Invalid parameters' });
     }
 
     const radiusDegreesLat = radiusKmFloat * KM_TO_DEGREES_LAT;
     const radiusDegreesLng = kmToDegreesLongitude(radiusKmFloat, latitudeFloat);
 
+    console.log('Calculated search bounds:', {
+        minLatitude: latitudeFloat - radiusDegreesLat,
+        maxLatitude: latitudeFloat + radiusDegreesLat,
+        minLongitude: longitudeFloat - radiusDegreesLng,
+        maxLongitude: longitudeFloat + radiusDegreesLng
+    });
+
     try {
+        // Fetch nearby users
         const nearbyUsers = await prisma.user.findMany({
             where: {
                 id: { not: req.user.id },
@@ -80,19 +95,18 @@ router.get('/feed', authenticateJWT, async (req, res) => {
             take: limitNumber,
         });
 
-        // const manyUsers = null; 
-        // await prisma.user.findMany({
-        //     skip: 1, //(pageNumber - 1) * limitNumber,
-        //     take: 1, //limitNumber,
-        //     include: { avatars: true, location: true },
-        // });
+        console.log('Number of nearby users found:', nearbyUsers.length);
 
+        // Send response
         res.json(nearbyUsers);
     } catch (error) {
-        console.error('Internal server error', error);
+        console.error('Internal server error', error);  // Log any internal errors
         res.status(500).send({ message: 'Internal server error' });
     }
+
+    console.log('--- End of /feed route ---');
 });
+
 
 // Feed (Nearby Users) route
 router.get('/feed-harvesine', authenticateJWT, async (req, res) => {
